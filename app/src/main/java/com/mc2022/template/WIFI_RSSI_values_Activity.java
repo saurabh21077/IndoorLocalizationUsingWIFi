@@ -93,8 +93,10 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
                 }
                 else{
                     WardriveWifiLocation wardriveData = new WardriveWifiLocation(scannedWifiList.get(0).SSID, Integer.toString(scannedWifiList.get(0).level), wardriveName);
+                    WardriveWifiLocationDatabase wardriveWifiLocationDatabase = WardriveWifiLocationDatabase.getInstance(getApplicationContext());
+                    wardriveWifiLocationDatabase.wardriveWifiLocationDAO().insert(wardriveData);
                     editText_wardriveLocationName.setText("");
-                    Toast.makeText(WIFI_RSSI_values_Activity.this, "Location Wardrive Success", Toast.LENGTH_LONG);
+                    Toast.makeText(WIFI_RSSI_values_Activity.this, scannedWifiList.get(0).SSID+" : "+scannedWifiList.get(0).level+"Location Wardrive Success", Toast.LENGTH_LONG);
                 }
             }
         });
