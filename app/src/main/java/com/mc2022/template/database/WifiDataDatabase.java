@@ -10,7 +10,7 @@ import com.mc2022.template.dao.UserLocationDAO;
 import com.mc2022.template.dao.WifiDataDAO;
 import com.mc2022.template.model.WifiData;
 
-@Database(entities = {WifiData.class}, version = 2)
+@Database(entities = {WifiData.class}, version = 4)
 public abstract class WifiDataDatabase extends RoomDatabase {
     public abstract WifiDataDAO wifiDataDAO();
 

@@ -10,7 +10,7 @@ import com.mc2022.template.dao.UserLocationDAO;
 import com.mc2022.template.dao.WardriveWifiLocationDAO;
 import com.mc2022.template.model.WardriveWifiLocation;
 
-@Database(entities = {WardriveWifiLocation.class}, version = 2)
+@Database(entities = {WardriveWifiLocation.class}, version = 4)
 public abstract class WardriveWifiLocationDatabase extends RoomDatabase {
     public abstract WardriveWifiLocationDAO wardriveWifiLocationDAO();
 

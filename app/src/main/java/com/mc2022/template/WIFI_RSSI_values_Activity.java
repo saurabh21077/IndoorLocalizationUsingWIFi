@@ -39,16 +39,18 @@ import java.util.Locale;
 
 public class WIFI_RSSI_values_Activity extends AppCompatActivity {
 
-    private TextView textView_latitude, textView_longitude, textView_wifiName;
-    private Button nearestWifiFetchButton, wardriveLocationButton;
+    private TextView textView_latitude, textView_longitude, textView_wifiName, textView_getCurrentLocationByWardriving;
+    private Button nearestWifiFetchButton, wardriveLocationButton, getLocationByWardivingButton;
 
     private EditText editText_wardriveLocationName;
 
+    private int k;
 
     private WifiManager wifiManager;
     //private WifiReceiver wifiReceiver;
     private ListView listView_scannedWifis;
     private List<ScanResult> scannedWifiList;
+    private WardriveWifiLocationDatabase wardriveWifiLocationDatabase;
 
     //Location related
     private LocationManager locationManager;
@@ -79,9 +81,16 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
 //
 //        }
         scanWifiFunc();
-        textView_wifiName.setText(scannedWifiList.get(0).SSID +" ("+ scannedWifiList.get(0).level+")");
+        String strongestWifiName = scannedWifiList.get(0).SSID;
+        int strongestWifiRSSI = scannedWifiList.get(0).level;
+        textView_wifiName.setText( strongestWifiName+" ("+ strongestWifiRSSI+")");
+
+        //K for KNN
+        k = scannedWifiList.size() > 5 ? 5 : scannedWifiList.size();
+        wardriveWifiLocationDatabase = WardriveWifiLocationDatabase.getInstance(getApplicationContext());
 
 
+        //K nearest Neighbour
         editText_wardriveLocationName = findViewById(R.id.editText_wardriveLocationName);
         wardriveLocationButton = findViewById(R.id.button_wardrive);
         wardriveLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -92,15 +101,74 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
                     Toast.makeText(WIFI_RSSI_values_Activity.this, "Enter a name to wardrive this location", Toast.LENGTH_LONG);
                 }
                 else{
-                    WardriveWifiLocation wardriveData = new WardriveWifiLocation(scannedWifiList.get(0).SSID, Integer.toString(scannedWifiList.get(0).level), wardriveName);
-                    WardriveWifiLocationDatabase wardriveWifiLocationDatabase = WardriveWifiLocationDatabase.getInstance(getApplicationContext());
-                    wardriveWifiLocationDatabase.wardriveWifiLocationDAO().insert(wardriveData);
+
+
+                    int r = 0 ;
+                    while( r < k){
+                        WardriveWifiLocation wardriveData = new WardriveWifiLocation(scannedWifiList.get(r).SSID, scannedWifiList.get(r).level, wardriveName);
+                        wardriveWifiLocationDatabase.wardriveWifiLocationDAO().insert(wardriveData);
+                        r++;
+                    }
+
                     editText_wardriveLocationName.setText("");
-                    Toast.makeText(WIFI_RSSI_values_Activity.this, scannedWifiList.get(0).SSID+" : "+scannedWifiList.get(0).level+"Location Wardrive Success", Toast.LENGTH_LONG);
+                    Toast.makeText(WIFI_RSSI_values_Activity.this, strongestWifiName+" : "+strongestWifiRSSI+"Location Wardrive Success", Toast.LENGTH_LONG);
                 }
             }
         });
 
+
+        getLocationByWardivingButton = findViewById(R.id.button_getLocationByWardriving);
+        textView_getCurrentLocationByWardriving = findViewById(R.id.textView_currentLocationByWardriving);
+        textView_getCurrentLocationByWardriving.setVisibility(View.GONE);
+        getLocationByWardivingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<WardriveWifiLocation> wardrivedLocations = wardriveWifiLocationDatabase.wardriveWifiLocationDAO().getList();
+                WardriveWifiLocation nearestNeighbour = null;
+                int minAvg = Integer.MAX_VALUE;
+
+                int avg =0;
+                //KNN algorithm
+                for(int i = 0; i<k; i++){
+                    int minRSSIdiff = Integer.MAX_VALUE;
+                    int totalDiff = 0;
+                    WardriveWifiLocation nearestLocationWithThisSSID = null;
+                    for(WardriveWifiLocation location : wardrivedLocations){
+//                        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4444");
+//                        System.out.println(scannedWifiList.get(i).SSID+" - "+location.getWifiName());
+                        if(scannedWifiList.get(i).SSID.equals(location.getWifiName())){
+
+                            int diff = scannedWifiList.get(i).level - location.getRSSI();
+//                            System.out.println("Diff = "+diff);
+                            if(diff<0){
+                                diff *= -1;
+//                                System.out.println("Diff Converted");
+                            }
+//                            System.out.println("Diff = "+diff+" ; MinRSSIdiff = "+minRSSIdiff);
+                            if(diff<minRSSIdiff){
+//                                System.out.println("MinRSSIdiff  replaced");
+                                minRSSIdiff = diff;
+                                nearestLocationWithThisSSID = location;
+                            }
+                        }
+                    }
+//                    System.out.println("minRSSIdiff = "+minRSSIdiff + " ; minAvg = "+minAvg);
+                    if(minRSSIdiff < minAvg){
+//                        System.out.println("min avg changed to "+minAvg);
+                        minAvg = minRSSIdiff;
+                        nearestNeighbour = nearestLocationWithThisSSID;
+                    }
+                }
+
+                textView_getCurrentLocationByWardriving.setVisibility(View.VISIBLE);
+                if(nearestNeighbour != null){
+                    textView_getCurrentLocationByWardriving.setText("Your Current Location is : "+nearestNeighbour.getName());
+                }
+                else {
+                    textView_getCurrentLocationByWardriving.setText("Could not find your current Location");
+                }
+            }
+        });
 
 
         // Location Related
@@ -116,7 +184,7 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
 //                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1, locationListener);
 //                Toast.makeText(WIFI_RSSI_values_Activity.this, "GPS Service Started..!", Toast.LENGTH_SHORT).show();
 //
-//                textView_wifiName.setText(scannedWifiList.get(0).SSID +" ("+ scannedWifiList.get(0).level+")");
+//                textView_wifiName.setText(scannedWifiList.get(0).SSID +" ("+ strongestWifiRSSI+")");
 //            }
 //        });
 
@@ -137,10 +205,10 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
             wifiManager.startScan();
             scannedWifiList = wifiManager.getScanResults();
             listView_scannedWifis.setAdapter(new WifiListAdapter(getApplicationContext(), scannedWifiList));
-            System.out.println("______________________________________________");
-            for(ScanResult sr : scannedWifiList){
-                System.out.println(sr.SSID);
-            }
+//            System.out.println("______________________________________________");
+//            for(ScanResult sr : scannedWifiList){
+//                System.out.println(sr.SSID);
+//            }
         }
     }
 
@@ -165,9 +233,9 @@ public class WIFI_RSSI_values_Activity extends AppCompatActivity {
             double lat = location.getLatitude();
             double lon = location.getLongitude();
 
-            System.out.println("==========================================================");
-            System.out.println(lat);
-            System.out.println(lon);
+//            System.out.println("==========================================================");
+//            System.out.println(lat);
+//            System.out.println(lon);
 
             textView_latitude.setText(String.valueOf(lat));
             textView_longitude.setText(String.valueOf(lon));

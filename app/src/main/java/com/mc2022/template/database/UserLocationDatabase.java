@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.mc2022.template.dao.UserLocationDAO;
 import com.mc2022.template.model.UserLocation;
 
-@Database(entities = {UserLocation.class}, version = 2)
+@Database(entities = {UserLocation.class}, version = 4)
 public abstract class UserLocationDatabase extends RoomDatabase {
     public abstract UserLocationDAO userLocationDAO();
 

@@ -243,7 +243,35 @@
                         android:textColor="@color/black"
                         android:layout_margin="30dp"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/button_getLocationByWardriving"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Get Your Location By Wardriving"
+                        android:textColor="@color/black"
+                        android:layout_margin="30dp"/>
+
+                    <TextView
+                        android:id="@+id/textView_currentLocationByWardriving"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Your Current Location is : "
+                        android:textColor="@color/white"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:layout_margin="10dp"
+                        android:padding="5dp"
+                        android:textSize="28dp"/>
+                </LinearLayout>
             </LinearLayout>
+
+
+
+
 
 
         </LinearLayout>

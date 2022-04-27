@@ -13,12 +13,12 @@ public class WardriveWifiLocation {
     private String wifiName;
 
     @ColumnInfo(name = "RSSI")
-    private String RSSI;
+    private int RSSI;
 
     @ColumnInfo(name = "LocationName")
     private String name;
 
-    public WardriveWifiLocation(String wifiName, String RSSI, String name) {
+    public WardriveWifiLocation(String wifiName, int RSSI, String name) {
         this.wifiName = wifiName;
         this.RSSI = RSSI;
         this.name = name;
@@ -40,11 +40,11 @@ public class WardriveWifiLocation {
         this.wifiName = wifiName;
     }
 
-    public String getRSSI() {
+    public int getRSSI() {
         return RSSI;
     }
 
-    public void setRSSI(String RSSI) {
+    public void setRSSI(int RSSI) {
         this.RSSI = RSSI;
     }
 

@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             {
                 // Get the selected Radio Button
                 RadioButton radioButton_sex = (RadioButton)radioGroup.findViewById(checkedId);
-                System.out.println(radioButton_sex.getText().toString());
+//                System.out.println(radioButton_sex.getText().toString());
                 editText_height = findViewById(R.id.editText_heightValue);
                 textView_strideLength = findViewById(R.id.textView_strideValue);
 
