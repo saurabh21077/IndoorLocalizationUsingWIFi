@@ -3,6 +3,7 @@ package com.mc2022.template;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,6 +11,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -38,7 +41,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private EditText editText_height;
     private RadioGroup sex_radioGroup;
-    private TextView textView_strideLength, textView_direction, textView_stepsCount, textView_distanceMoved, textView_accl, textView_mag;
+    private TextView textView_strideLength, textView_direction, textView_distanceMoved;
+
+    private Button rssi_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         progressBar = findViewById(R.id.progress_bar);
         progressText = findViewById(R.id.progress_text);
 
+        rssi_button = findViewById(R.id.button_rssi);
 
 
 
@@ -103,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
+        rssi_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(MainActivity.this, WIFI_RSSI_values_Activity.class);
+                startActivity(myIntent);
+            }
+        });
+
 
     }
 
@@ -114,9 +128,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
-
-            textView_accl = findViewById(R.id.textView_acclValue);
-            textView_accl.setText(Float.toString(x)+"  "+Float.toString(y)+"  "+Float.toString(z));
 
             gravity = sensorEvent.values;
 
@@ -145,15 +156,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         progressText.setText("" + stepCount);
                         progressBar.setProgress(i);
                         i = stepCount/3;
-                        handler.postDelayed(this, 100);
+                        handler.postDelayed(this, 300);
                     } else {
                         handler.removeCallbacks(this);
                     }
                 }
-            }, 100);
-
-            textView_stepsCount = findViewById(R.id.textView_stepsValue);
-            textView_stepsCount.setText(Integer.toString(stepCount));
+            }, 300);
 
             textView_distanceMoved = findViewById(R.id.textView_distanceValue);
             textView_distanceMoved.setText(String.format("%.3f",distance/100000.0));
@@ -161,10 +169,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
           //Log.i("MAGNETOMETER", "X-axis:" + sensorEvent.values[0] + "Y-axis:" + sensorEvent.values[1]+"Z-axis:" + sensorEvent.values[2]);
-
-            textView_mag = findViewById(R.id.textView_magValue);
-            textView_mag.setText(sensorEvent.values[0] +"  "+sensorEvent.values[1]+"  "+sensorEvent.values[2]);
-
             geoMagneticField = sensorEvent.values;
         }
 
@@ -209,9 +213,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 else {
                     textView_direction.setText("North West");
                 }
-
-                //deg.setText(Float.toString(degree));
-                //System.out.println("degree " + degree);
             }
         }
 
