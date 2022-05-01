@@ -30,8 +30,8 @@ the test data. Design an appropriate UI to show the location.
 
 ## Screenshots:
 <p>
-  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_1.jpg" width="250" title="SS1">
-  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_2.jpg" width="250" title="SS2">
-  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_3.jpg" width="250" title="SS3">
-  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_4.jpg" width="250" title="SS4">
+  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_1.jpg" width="220" title="SS1">
+  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_2.jpg" width="220" title="SS2">
+  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_3.png" width="220" title="SS3">
+  <img src="https://github.com/saurabh21077/IndoorLocalizationUsingWIFi/blob/assignment-5/Screenshot_4.png" width="220" title="SS4">
 </p>
